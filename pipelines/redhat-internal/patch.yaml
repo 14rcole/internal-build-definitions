@@ -1,0 +1,23 @@
+---
+- op: replace
+  path: /metadata/name
+  value: docker-build-with-coverity
+- op: add
+  path: /spec/tasks/-
+  value:
+    name: hello
+    when:
+    - input: $(params.skip-checks)
+      operator: in
+      values: ["false"]
+    runAfter:
+      - sast-snyk-check
+    taskRef:
+      resolver: git
+      params:
+        - name: url
+          value: https://github.com/14rcole/internal-build-definitions.git
+        - name: revision
+          value: kustomize-test
+        - name: pathInRepo
+          value: tasks/sast-coverity-check/0.1/sast-coverity-check.yaml
